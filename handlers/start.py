@@ -1,10 +1,15 @@
 from aiogram.types import Message
+from aiogram import Router, F
+from aiogram.filters import Command
 from aiogram.types import FSInputFile
 
 from keyboards import start_kb, calculator_kb
 
 
-# greetings func
+start_router = Router()
+
+# greetings handler
+@start_router.message(F.text, Command("start"))
 async def greetings(message: Message):
 #    user_id = message.from_user.id # get telegram user ID
     user_name = message.from_user.first_name # get telegram user name
@@ -20,11 +25,13 @@ async def greetings(message: Message):
     'необходимого вам изделия,\n'
     'нажмите кнопку\n 📝<b>РАССЧЁТ</b>')
 
-# info func
+# info handler
+@start_router.message(F.text == "ИНФОРМАЦИЯ ℹ️")
 async def send_group_link(message: Message):
     await message.answer("https://t.me/appazov_stone")
 
-# start calculate func
+# start calculate handler
+@start_router.message(F.text == "РАССЧЁТ 📝")
 async def calculate(message: Message):
     await message.answer(
         "<b>Обратите внимание</b>❗️\nРасчёт может не совпадать "
@@ -33,3 +40,9 @@ async def calculate(message: Message):
         "наши специалисты свяжутся с вами,\nи после"
         " замера на месте,\nскажут Вам окончательную цену.",
         reply_markup=calculator_kb)
+
+
+# start handler
+@start_router.message()
+async def all_messages(message):
+    await message.answer('Введите команду /start, чтобы начать общение.')

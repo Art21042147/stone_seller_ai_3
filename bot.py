@@ -1,22 +1,16 @@
 import asyncio
-from aiogram import F
-from aiogram.filters import Command
+from aiogram import Bot, Dispatcher
+from aiogram.client.default import DefaultBotProperties
 
-from config import bot, dp
-from handlers.start import *
-
-# start menu handlers
-dp.message(F.text, Command("start"))(greetings)
-dp.message(F.text == "ИНФОРМАЦИЯ ℹ️")(send_group_link)
-dp.message(F.text == "РАССЧЁТ 📝")(calculate)
-
-# start handler
-@dp.message()
-async def all_messages(message):
-    await message.answer('Введите команду /start, чтобы начать общение.')
+from config_reader import config
+from handlers.start import start_router
 
 
 async def main():
+    bot = Bot(token=config.bot_token.get_secret_value(),
+              default=DefaultBotProperties(parse_mode='HTML'))
+    dp = Dispatcher()
+    dp.include_router(start_router)
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
 

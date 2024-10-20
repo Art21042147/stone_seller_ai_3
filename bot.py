@@ -3,11 +3,12 @@ from aiogram import F
 from aiogram.filters import Command
 
 from config import bot, dp
-from handlers.start import greetings
+from handlers.start import *
 
 # start menu handlers
 dp.message(F.text, Command("start"))(greetings)
-
+dp.message(F.text == "ИНФОРМАЦИЯ ℹ️")(send_group_link)
+dp.message(F.text == "РАССЧЁТ 📝")(calculate)
 
 # start handler
 @dp.message()

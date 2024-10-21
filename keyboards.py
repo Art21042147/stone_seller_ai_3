@@ -1,5 +1,7 @@
+from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.types import (ReplyKeyboardMarkup, KeyboardButton,
                            InlineKeyboardMarkup, InlineKeyboardButton)
+
 
 # start keyboard
 start_kb = ReplyKeyboardMarkup(keyboard=[
@@ -17,8 +19,7 @@ calculator_kb = InlineKeyboardMarkup(inline_keyboard=[
 brands = ['Corian', 'Tristone', 'Grandex', 'Montelli']
 
 async def get_brand():
-    brand_kb = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=brand, callback_data=brand)] for brand in brands
-    ])
-    return brand_kb
-
+    builder = InlineKeyboardBuilder()
+    for brand in brands:
+        builder.add(InlineKeyboardButton(text=brand, callback_data=brand))
+    return builder.adjust(2).as_markup()

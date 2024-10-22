@@ -6,11 +6,15 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.client.default import DefaultBotProperties
 
 from config_reader import config
+from db.models import async_db
+from db.requests import update_brands_and_colors
 from handlers.staff_choose import choose_router
 from handlers.start import start_router
 
 
 async def main():
+    await async_db() # creating db
+    await update_brands_and_colors() # updating brands and colors
     bot = Bot(token=config.bot_token.get_secret_value(),
               default=DefaultBotProperties(parse_mode='HTML'))
     dp = Dispatcher(storage=MemoryStorage())

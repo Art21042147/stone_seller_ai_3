@@ -19,7 +19,10 @@ calculator_kb = InlineKeyboardMarkup(inline_keyboard=[
 brands = ['Corian', 'Tristone', 'Grandex', 'Montelli']
 
 async def get_brand():
-    builder = InlineKeyboardBuilder()
+    brand_builder = InlineKeyboardBuilder()
     for brand in brands:
-        builder.add(InlineKeyboardButton(text=brand, callback_data=brand))
-    return builder.adjust(2).as_markup()
+        brand_builder.add(InlineKeyboardButton(text=brand, callback_data=brand))
+    return brand_builder.adjust(2).as_markup()
+
+
+# choose color keyboard

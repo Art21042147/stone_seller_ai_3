@@ -1,7 +1,8 @@
+from sqlalchemy import select
+from db.models import Brand, async_session
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-from aiogram.types import (ReplyKeyboardMarkup, KeyboardButton,
-                           InlineKeyboardMarkup, InlineKeyboardButton)
-
+from aiogram.types import (InlineKeyboardButton, ReplyKeyboardMarkup,
+                           KeyboardButton, InlineKeyboardMarkup)
 
 # start keyboard
 start_kb = ReplyKeyboardMarkup(keyboard=[
@@ -16,13 +17,14 @@ calculator_kb = InlineKeyboardMarkup(inline_keyboard=[
     ])
 
 #choose brand keyboard
-brands = ['Corian', 'Tristone', 'Grandex', 'Montelli']
-
 async def get_brand():
+    async with async_session() as session:
+        result = await session.execute(select(Brand.title))
+        brands = result.scalars().all()
+
     brand_builder = InlineKeyboardBuilder()
     for brand in brands:
         brand_builder.add(InlineKeyboardButton(text=brand, callback_data=brand))
     return brand_builder.adjust(2).as_markup()
-
 
 # choose color keyboard

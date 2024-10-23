@@ -1,7 +1,6 @@
 from aiogram.types import CallbackQuery
 from aiogram import Router, F
-from keyboards import get_brand, get_brand_info
-
+from keyboards import get_brand, get_brand_info, get_color_info
 
 choose_router = Router()
 
@@ -20,3 +19,17 @@ async def display_brand_info(callback: CallbackQuery):
 
     text, markup = await get_brand_info(brand_title)
     await callback.message.edit_text(text=text, reply_markup=markup)
+
+
+@choose_router.callback_query(F.data.startswith('color_'))
+async def process_color(callback: CallbackQuery):
+    brand_title = callback.data.split('_')[1]
+
+    media_files, color_data, color_kb = await get_color_info(brand_title)
+
+    # Отправляем изображения и цены
+    for idx, media_file in enumerate(media_files):
+        await callback.message.answer_photo(photo=media_file, caption=color_data[idx]["price_text"])
+
+    # Отправляем клавиатуру для выбора цвета
+    await callback.message.answer("Выберите цвет:", reply_markup=color_kb)

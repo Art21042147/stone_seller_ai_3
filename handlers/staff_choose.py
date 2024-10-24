@@ -1,6 +1,6 @@
 from aiogram.types import CallbackQuery
 from aiogram import Router, F
-from keyboards import brand_kb
+from keyboards import brand_kb, brand_info_kb
 
 choose_router = Router()
 
@@ -13,12 +13,12 @@ async def choose_brand(callback: CallbackQuery):
                                      reply_markup=await brand_kb())
 
 # get brand info and choose color handler
-# @choose_router.callback_query(F.data.startswith("brand_"))
-# async def display_brand_info(callback: CallbackQuery):
-#     brand_title = callback.data.split("_")[1]  # extract brand title
-#
-#     text, markup = await get_brand_info(brand_title)
-#     await callback.message.edit_text(text=text, reply_markup=markup)
+@choose_router.callback_query(F.data.startswith("brand_"))
+async def display_brand_info(callback: CallbackQuery):
+    brand_title = callback.data.split("_")[1]  # extract brand title
+
+    text, markup = await brand_info_kb(brand_title)
+    await callback.message.edit_text(text=text, reply_markup=markup)
 
 
 # @choose_router.callback_query(F.data.startswith('color_'))

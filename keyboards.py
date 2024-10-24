@@ -2,7 +2,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-from db.requests import get_brand
+from db.requests import get_brand_title, get_brand_info
 
 # start keyboard
 start_kb = ReplyKeyboardMarkup(keyboard=[
@@ -18,7 +18,7 @@ calculator_kb = InlineKeyboardMarkup(inline_keyboard=[
 
 # choose brand keyboard
 async def brand_kb():
-    brands = await get_brand()
+    brands = await get_brand_title()
     brand_builder = InlineKeyboardBuilder()
     for brand in brands:
         brand_builder.add(InlineKeyboardButton(text=brand, callback_data=f'brand_{brand}'))
@@ -26,18 +26,15 @@ async def brand_kb():
 
 
 # get brand info and choose color or another brand keyboard
-# async def get_brand_info(brand_title):
-#     async with async_session() as session:
-#         result = await session.execute(select(Brand.description).where(Brand.title == brand_title))
-#         brand_info = result.scalar()
-#
-#     brand_info_builder = InlineKeyboardBuilder()
-#     brand_info_builder.add(InlineKeyboardButton(text="Выбор цвета",
-#                                                 callback_data=f'color_{brand_title}'))
-#     brand_info_builder.add(InlineKeyboardButton(text="Выбор другого производителя",
-#                                                 callback_data='calculator'))
-#     text = f"<b>{brand_title}:</b>\n{brand_info}"
-#     return text, brand_info_builder.adjust(1).as_markup()
+async def brand_info_kb(brand_title):
+    brand_info = await get_brand_info(brand_title)
+    brand_info_builder = InlineKeyboardBuilder()
+    brand_info_builder.add(InlineKeyboardButton(text="Выбор цвета",
+                                                callback_data=f'color_{brand_title}'))
+    brand_info_builder.add(InlineKeyboardButton(text="Выбор другого производителя",
+                                                callback_data='calculator'))
+    text = f"<b>{brand_title}:</b>\n{brand_info}"
+    return text, brand_info_builder.adjust(1).as_markup()
 
 # choose color keyboard
 # color_cache = {}

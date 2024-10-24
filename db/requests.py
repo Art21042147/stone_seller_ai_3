@@ -2,7 +2,7 @@ from service.catalog import manufacture, colors
 from sqlalchemy import select
 from db.models import Brand, Color, async_session
 
-
+# update data from catalog
 async def update_brands_and_colors():
     async with async_session() as session:
         async with session.begin():
@@ -30,3 +30,9 @@ async def update_brands_and_colors():
                         session.add(new_color)
 
         await session.commit()
+
+
+# get brand from catalog
+async def get_brand():
+    async with async_session() as session:
+        return await session.scalars(select(Brand.title))

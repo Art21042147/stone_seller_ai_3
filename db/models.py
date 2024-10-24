@@ -17,10 +17,7 @@ class Brand(Base):
     title: Mapped[str] = mapped_column(String(20))
     description: Mapped[str] = mapped_column(String(500))
 
-    # Связь с таблицей Color
     colors: Mapped[list["Color"]] = relationship(back_populates="brand")
-
-    # Связь с таблицей Order
     orders: Mapped[list["Order"]] = relationship(back_populates="brand")
 
 
@@ -32,10 +29,7 @@ class Color(Base):
     price: Mapped[int] = mapped_column()
     brand_id: Mapped[int] = mapped_column(ForeignKey('manufacture.id'))
 
-    # Обратная связь с таблицей Brand
     brand: Mapped["Brand"] = relationship(back_populates="colors")
-
-    # Связь с таблицей Order
     orders: Mapped[list["Order"]] = relationship(back_populates="color")
 
 
@@ -53,10 +47,7 @@ class Order(Base):
     brand_id: Mapped[int] = mapped_column(ForeignKey('manufacture.id'))
     color_id: Mapped[int] = mapped_column(ForeignKey('color.id'))
 
-    # Обратная связь с таблицей Brand
     brand: Mapped["Brand"] = relationship(back_populates="orders")
-
-    # Обратная связь с таблицей Color
     color: Mapped["Color"] = relationship(back_populates="orders")
 
 

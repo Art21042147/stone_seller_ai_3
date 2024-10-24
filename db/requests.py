@@ -32,17 +32,17 @@ async def update_brands_and_colors():
         await session.commit()
 
 
-# get brand title from catalog
+# get brand title from db
 async def get_brand_title():
     async with async_session() as session:
         return await session.scalars(select(Brand.title))
 
-# get brand info from catalog
+# get brand info from db
 async def get_brand_info(brand_title):
     async with async_session() as session:
         return await session.scalar(select(Brand.description).where(Brand.title == brand_title))
 
-# choose color from catalog
+# get color from db
 async def get_color(brand_title):
     async with async_session() as session:
         return await session.scalars(

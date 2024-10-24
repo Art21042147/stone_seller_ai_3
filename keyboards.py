@@ -37,44 +37,13 @@ async def brand_info_kb(brand_title):
     return text, brand_info_builder.adjust(1).as_markup()
 
 # choose color keyboard
-# color_cache = {}
-#
-# async def get_color_info(brand_title):
-#     if brand_title in color_cache:
-#         return color_cache[brand_title]
-#
-#     async with async_session() as session:
-#         result = await session.execute(
-#             select(Color).join(Brand).where(Brand.title == brand_title)
-#         )
-#         colors = result.scalars().all()
-#     # get rate func
-#     usd_to_rub_rate = get_usd_to_rub_rate()
-#
-#     color_info_builder = InlineKeyboardBuilder()
-#     media_files = []
-#     color_data = []
-#
-#     for color in colors:
-#         image_path = f"media/{brand_title.lower()}/{color.color}.jpg"
-#         media_file = FSInputFile(image_path)
-#         media_files.append(media_file)
-#         # convert price to RUB
-#         price_in_rub = round(color.price * usd_to_rub_rate, 2)
-#         price_text = f"Цена: {price_in_rub} руб/м.п."
-#         # make color builder
-#         color_info_builder.add(InlineKeyboardButton(text=f"Выбрать {color.color}",
-#                                                     callback_data=f'select_color_{color.id}'))
-#         color_info_builder.add(InlineKeyboardButton(text="Выбор другого производителя",
-#                                                     callback_data='calculator'))
-#         # saves color info
-#         color_data.append({
-#             "media_file": media_file,
-#             "price_text": price_text,
-#             "color_id": color.id
-#         })
-#
-#     color_cache[brand_title] = (media_files,
-#                                 color_data,
-#                                 color_info_builder.adjust(1).as_markup())
-#     return color_cache[brand_title]
+get_color_kb = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [InlineKeyboardButton(text='Выбрать этот цвет', callback_data=f'confirm')],
+        ])
+
+# return to choose brand keyboard
+brand_return_kb = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [InlineKeyboardButton(text='Выбрать другого производителя', callback_data=f'calculator')],
+        ])

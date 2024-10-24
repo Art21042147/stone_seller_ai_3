@@ -41,3 +41,9 @@ async def get_brand_title():
 async def get_brand_info(brand_title):
     async with async_session() as session:
         return await session.scalar(select(Brand.description).where(Brand.title == brand_title))
+
+# choose color from catalog
+async def get_color(brand_title):
+    async with async_session() as session:
+        return await session.scalars(
+            select(Color).join(Brand).where(Brand.title == brand_title))

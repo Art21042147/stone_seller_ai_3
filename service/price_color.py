@@ -12,9 +12,9 @@ async def get_price_color(brand_title):
         image_path = f"media/{brand_title.lower()}/{color.color}.jpg"
         media_file = FSInputFile(image_path)
         # convert price to RUB
-        price_in_rub = round(color.price * get_usd_to_rub_rate(), 2)
-        price_text = f"Цена: {price_in_rub} руб/м.п."
+        price_rub = round(color.price * get_usd_to_rub_rate(), 2)
+        price_text = f"Цена: {price_rub} руб/м.п."
         color_data = color.color
         message_text = f"{brand_title} <b>{color_data}</b> {price_text}"
-        result.append((media_file, message_text))
+        result.append((media_file, message_text, color_data, price_rub))
     return result

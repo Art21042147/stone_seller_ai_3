@@ -37,9 +37,11 @@ async def brand_info_kb(brand_title):
     return text, brand_info_builder.adjust(1).as_markup()
 
 # choose color keyboard
-get_color_kb = InlineKeyboardMarkup(
-    inline_keyboard=[
-        [InlineKeyboardButton(text='Выбрать этот цвет', callback_data=f'confirm')],
+def get_color_kb(brand_title, color_data, price_rub):
+    callback_data = f'confirm_{brand_title}_{color_data}_{price_rub}'
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text='Выбрать этот цвет', callback_data=callback_data)],
         ])
 
 # return to choose brand keyboard

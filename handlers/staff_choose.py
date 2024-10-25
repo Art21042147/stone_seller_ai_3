@@ -26,12 +26,12 @@ async def display_brand_info(callback: CallbackQuery):
 @choose_router.callback_query(F.data.startswith('color_'))
 async def process_color(callback: CallbackQuery):
     brand_title = callback.data.split('_')[1]
-    colors_data = await get_price_color(brand_title)
-    for media_file, message_text in colors_data:
+    stone_data = await get_price_color(brand_title)
+    for media_file, message_text, color_data, price_rub in stone_data:
         await callback.message.answer_photo(
             photo=media_file,
             caption=message_text,
-            reply_markup=get_color_kb
+            reply_markup=get_color_kb(brand_title, color_data, price_rub)
         )
 
     await callback.message.answer(

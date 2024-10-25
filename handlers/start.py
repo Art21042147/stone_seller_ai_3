@@ -11,7 +11,6 @@ start_router = Router()
 # greetings handler
 @start_router.message(F.text, Command("start"))
 async def greetings(message: Message):
-#    user_id = message.from_user.id # get telegram user ID
     user_name = message.from_user.first_name # get telegram user name
     await message.answer(
         f'<b>Добро пожаловать, {user_name}!</b>\n'

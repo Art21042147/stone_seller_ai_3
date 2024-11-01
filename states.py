@@ -7,6 +7,7 @@ class StoneState(StatesGroup):
     price_rub = State()
     length = State()
     width = State()
+    cost = State()
 
 
 class OrderState(StoneState):

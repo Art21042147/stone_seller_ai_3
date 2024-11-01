@@ -49,3 +49,11 @@ brand_return_kb = InlineKeyboardMarkup(
     inline_keyboard=[
         [InlineKeyboardButton(text='Выбрать другого производителя', callback_data=f'calculator')],
         ])
+
+
+# get order keyboard
+place_order_kb = InlineKeyboardMarkup(
+    inline_keyboard=[
+                    [InlineKeyboardButton(text="Оформить заказ", callback_data="place_order")],
+                    [InlineKeyboardButton(text="Выполнить другой расчёт", callback_data="calculator")]
+                    ])

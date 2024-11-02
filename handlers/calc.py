@@ -49,7 +49,7 @@ async def process_width(message: Message, state: FSMContext):
     width = data['width']
 
     # calculate the total cost
-    cost = price_rub * 0.76 * (length / 1000) * (width / 1000)
+    cost = (price_rub * (length / 1000) * (width / 1000)) + 5000
 
     # display total price with options to proceed or recalculate
     await message.answer(

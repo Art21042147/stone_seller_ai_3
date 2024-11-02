@@ -1,0 +1,66 @@
+from aiogram.types import CallbackQuery, Message
+from aiogram import Router, F
+from aiogram.fsm.context import FSMContext
+
+from db.requests import save_order
+from states import OrderState
+
+order_router = Router()
+
+@order_router.callback_query(F.data == "place_order")
+async def start_order(callback: CallbackQuery, state: FSMContext):
+    # save the chat ID
+    await state.update_data(tg_id=callback.from_user.id)
+
+    # requesting username
+    await callback.message.answer("Введите ваше имя:")
+    await state.set_state(OrderState.name)
+
+# save the name and request the phone number
+async def process_name(message: Message, state: FSMContext):
+    await state.update_data(name=message.text)
+    await state.set_state(OrderState.phone)
+    await message.answer("Введите номер телефона для связи:")
+
+# save the phone number and request the address
+async def process_phone(message: Message, state: FSMContext):
+    try:
+        phone = int(message.text)
+        await state.update_data(phone=phone)
+        await state.set_state(OrderState.address)
+        await message.answer("Введите свой адрес:")
+    except ValueError:
+        await message.answer("Пожалуйста, введите корректный номер телефона.")
+
+# save the address and order details
+async def process_address(message: Message, state: FSMContext):
+    await state.update_data(address=message.text)
+
+    # extract all data from the state
+    data = await state.get_data()
+    tg_id = data['tg_id']
+    name = data['name']
+    phone = data['phone']
+    address = data['address']
+    brand_title = data['brand_title']
+    color_data = data['color_data']
+    length = data['length']
+    width = data['width']
+    cost = data['cost']
+
+    # save the order in the db
+    await save_order(
+        tg_id=tg_id,
+        brand_title=brand_title,
+        color_data=color_data,
+        length=length,
+        width=width,
+        cost=cost,
+        name=name,
+        phone=phone,
+        address=address
+    )
+
+    await message.answer("Ваш заказ успешно оформлен!\n"
+                         "Наши специалисты скоро свяжутся с вами.")
+    await state.clear()

@@ -57,3 +57,10 @@ place_order_kb = InlineKeyboardMarkup(
                     [InlineKeyboardButton(text="Оформить заказ", callback_data="place_order")],
                     [InlineKeyboardButton(text="Выполнить другой расчёт", callback_data="calculator")]
                     ])
+
+# admin keyboard
+async def admin_keyboard(order_id):
+    return (InlineKeyboardMarkup(
+    inline_keyboard=[
+                    [InlineKeyboardButton(text="Посмотреть", callback_data=f"view_order_{order_id}")]
+                    ]))

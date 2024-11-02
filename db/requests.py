@@ -1,5 +1,7 @@
-from service.catalog import manufacture, colors
+from sqlalchemy.orm import selectinload
 from sqlalchemy import select
+
+from service.catalog import manufacture, colors
 from db.models import Brand, Color, Order, async_session
 
 # update data from catalog
@@ -74,3 +76,28 @@ async def save_order(tg_id, brand_title, color_data, length, width, cost, name, 
 
         session.add(new_order)
         await session.commit()
+        await session.refresh(new_order)
+
+        return new_order.id
+
+# get order details by order_id
+async def get_order_details(order_id):
+    async with async_session() as session:
+        result = await session.execute(
+            select(Order)
+            .options(selectinload(Order.brand), selectinload(Order.color))
+            .where(Order.id == order_id)
+        )
+        order = result.scalars().first()
+        if order:
+            return {
+                "name": order.name,
+                "phone": order.phone,
+                "address": order.address,
+                "brand_title": order.brand.title,
+                "color_data": order.color.color,
+                "length": order.length,
+                "width": order.width,
+                "cost": order.cost
+            }
+        return None

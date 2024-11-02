@@ -2,8 +2,10 @@ from aiogram.types import CallbackQuery, Message
 from aiogram import Router, F
 from aiogram.fsm.context import FSMContext
 
-from db.requests import save_order
+from db.requests import save_order, get_order_details
 from states import OrderState
+from keyboards import admin_keyboard
+from config_reader import config
 
 order_router = Router()
 
@@ -48,8 +50,8 @@ async def process_address(message: Message, state: FSMContext):
     width = data['width']
     cost = data['cost']
 
-    # save the order in the db
-    await save_order(
+    # save the order in the db and get order_id
+    order_id = await save_order(
         tg_id=tg_id,
         brand_title=brand_title,
         color_data=color_data,
@@ -63,4 +65,35 @@ async def process_address(message: Message, state: FSMContext):
 
     await message.answer("Ваш заказ успешно оформлен!\n"
                          "Наши специалисты скоро свяжутся с вами.")
+    # admin notification
+    admin_id = int(config.admin_id.get_secret_value())
+    keyboard = await admin_keyboard(order_id)
+
+    await message.bot.send_message(
+        admin_id,
+        f"Поступила новая заявка от {name}.",
+        reply_markup=keyboard
+    )
     await state.clear()
+
+
+# view order details
+@order_router.callback_query(F.data.startswith('view_order_'))
+async def view_order(callback: CallbackQuery):
+    order_id = callback.data.split('_')[-1]
+    order_details = await get_order_details(order_id)
+
+    if order_details:
+        await callback.message.answer(
+            f"Заявка №{order_id}\n"
+            f"Имя: {order_details['name']}\n"
+            f"Телефон: {order_details['phone']}\n"
+            f"Адрес: {order_details['address']}\n"
+            f"Материал: {order_details['brand_title']}\n"
+            f"Цвет: {order_details['color_data']}\n"
+            f"Размеры: {order_details['length']}x{order_details['width']}\n"
+            f"Сумма: {order_details['cost']:.2f} руб."
+        )
+    else:
+        await callback.message.answer("Заказ не найден.")
+    await callback.answer()

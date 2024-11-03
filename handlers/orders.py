@@ -87,6 +87,7 @@ async def view_order(callback: CallbackQuery):
         await callback.message.answer(
             f"Заявка №{order_id}\n"
             f"Имя: {order_details['name']}\n"
+            f"Телеграм ID: {order_details['tg_id']}\n"
             f"Телефон: {order_details['phone']}\n"
             f"Адрес: {order_details['address']}\n"
             f"Материал: {order_details['brand_title']}\n"

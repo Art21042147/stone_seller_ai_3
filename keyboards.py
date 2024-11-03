@@ -66,11 +66,11 @@ async def admin_keyboard(order_id):
                     ]))
 
 # bot manager keyboard
-bot_manager_kb = ReplyKeyboardMarkup(
-    keyboard=[
-        [KeyboardButton(text='Посмотреть заказ✅', callback_data='get_order')],
-        [KeyboardButton(text='Все заказы📔', callback_data='get_all_orders')],
-        [KeyboardButton(text='Удалить заказ❌', callback_data='del_order')],
-        [KeyboardButton(text='Заблокировать пользователя🔒', callback_data='ban_user')],
-        [KeyboardButton(text='Разблокировать пользователя🔓', callback_data='unban_user')]
-        ], resize_keyboard=True)
+bot_manager_kb = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [InlineKeyboardButton(text='Посмотреть заказ✅', callback_data='get_order')],
+        [InlineKeyboardButton(text='Все заказы📔', callback_data='get_all_orders')],
+        [InlineKeyboardButton(text='Удалить заказ❌', callback_data='del_order')],
+        [InlineKeyboardButton(text='Заблокировать пользователя🔒', callback_data='ban_user')],
+        [InlineKeyboardButton(text='Разблокировать пользователя🔓', callback_data='unban_user')]
+        ])

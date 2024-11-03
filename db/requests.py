@@ -92,6 +92,7 @@ async def get_order_details(order_id):
         if order:
             return {
                 "name": order.name,
+                "tg_id": order.tg_id,
                 "phone": order.phone,
                 "address": order.address,
                 "brand_title": order.brand.title,

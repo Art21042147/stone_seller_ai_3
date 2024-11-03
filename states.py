@@ -14,3 +14,11 @@ class OrderState(StoneState):
     name = State()
     phone= State()
     address = State()
+
+
+class AdminState(StatesGroup):
+    order = State()
+    all_orders = State()
+    delete_order = State()
+    ban_user = State()
+    unban_user = State()

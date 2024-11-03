@@ -14,8 +14,9 @@ from handlers.calc import calc_router
 from handlers.calc import process_length, process_width
 from handlers.orders import order_router
 from handlers.orders import process_name, process_phone, process_address
+from handlers.admin import get_order_by_id
 from handlers.admin import admin_router
-from states import StoneState, OrderState
+from states import StoneState, OrderState, AdminState
 
 
 async def main():
@@ -36,6 +37,7 @@ async def main():
     dp.message.register(process_name, OrderState.name)
     dp.message.register(process_phone, OrderState.phone)
     dp.message.register(process_address, OrderState.address)
+    dp.message.register(get_order_by_id, AdminState.order)
 
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot,

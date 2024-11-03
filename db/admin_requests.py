@@ -73,6 +73,12 @@ async def ban_user(tg_id):
         await session.commit()
         return True
 
+# check if user is banned
+async def is_user_banned(tg_id):
+    async with async_session() as session:
+        result = await session.execute(select(BannedUser).where(BannedUser.tg_id == tg_id))
+        return result.scalars().first() is not None
+
 # unban user by tg_id
 async def unban_user(tg_id):
     async with async_session() as session:

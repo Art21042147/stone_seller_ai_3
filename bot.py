@@ -4,6 +4,7 @@ import logging
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.client.default import DefaultBotProperties
+from middlewares import BanCheckMiddleware
 
 from config_reader import config
 from db.models import async_db
@@ -38,6 +39,10 @@ async def main():
     dp.message.register(process_phone, OrderState.phone)
     dp.message.register(process_address, OrderState.address)
     dp.message.register(get_order_by_id, AdminState.order)
+
+    # registering middleware
+    dp.message.middleware(BanCheckMiddleware())
+    dp.callback_query.middleware(BanCheckMiddleware())
 
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot,

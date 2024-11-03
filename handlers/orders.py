@@ -2,7 +2,8 @@ from aiogram.types import CallbackQuery, Message
 from aiogram import Router, F
 from aiogram.fsm.context import FSMContext
 
-from db.requests import save_order, get_order_details
+from db.requests import save_order
+from db.admin_requests import get_order_details
 from states import OrderState
 from keyboards import admin_keyboard
 from config_reader import config

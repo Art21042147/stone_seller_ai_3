@@ -6,7 +6,7 @@ from aiogram.filters import Command
 from config_reader import config
 from keyboards import bot_manager_kb
 from states import AdminState
-from db.requests import get_order_details
+from db.admin_requests import get_order_details, get_all_orders, delete_order
 
 admin_router = Router()
 
@@ -60,6 +60,51 @@ async def get_order_by_id(message: Message, state: FSMContext):
             )
         else:
             await message.answer("Заказ не найден.")
+    except ValueError:
+        await message.answer("Пожалуйста, введите корректный номер заказа.")
+    finally:
+        await state.clear()
+
+# get all orders handler
+@admin_router.callback_query(F.data == "get_all_orders")
+async def get_all_orders_handler(callback: CallbackQuery):
+    orders = await get_all_orders()
+
+    if not orders:
+        await callback.message.answer("Заказы отсутствуют.")
+    else:
+        for order in orders:
+            await callback.message.answer(
+                f"Заявка №{order['order_id']}\n"
+                f"Имя: {order['name']}\n"
+                f"Телеграм ID: {order['tg_id']}\n"
+                f"Телефон: {order['phone']}\n"
+                f"Адрес: {order['address']}\n"
+                f"Материал: {order['brand_title']}\n"
+                f"Цвет: {order['color_data']}\n"
+                f"Размеры: {order['length']}x{order['width']}\n"
+                f"Сумма: {order['cost']:.2f} руб.\n"
+                "➖➖➖➖➖➖➖➖➖➖➖"
+            )
+    await callback.answer()
+
+# set order ID to delete
+@admin_router.callback_query(F.data == "del_order")
+async def prompt_delete_order(callback: CallbackQuery, state: FSMContext):
+    await callback.message.answer("Введите номер заказа для удаления:")
+    await state.set_state(AdminState.delete_order)
+
+# Handle order deletion by order_id
+@admin_router.message(AdminState.delete_order)
+async def delete_order_handler(message: Message, state: FSMContext):
+    try:
+        order_id = int(message.text)
+        is_deleted = await delete_order(order_id)
+
+        if is_deleted:
+            await message.answer(f"Заказ №{order_id} успешно удалён.")
+        else:
+            await message.answer("Заказ с указанным номером не найден.")
     except ValueError:
         await message.answer("Пожалуйста, введите корректный номер заказа.")
     finally:

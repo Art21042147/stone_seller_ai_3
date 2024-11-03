@@ -6,7 +6,7 @@ from aiogram.filters import Command
 from config_reader import config
 from keyboards import bot_manager_kb
 from states import AdminState
-from db.admin_requests import get_order_details, get_all_orders, delete_order
+from db.admin_requests import *
 
 admin_router = Router()
 
@@ -26,7 +26,7 @@ async def greeting_admin(message: Message):
             'и введите номер заказа\n'
             '➖ Чтобы заблокировать пользователя, нажмите кнопку\n'
             '<b>🔒Заблокировать пользователя</b>\n'
-            'и введите ID пользователя\n'
+            'и введите <b>телеграм ID</b> пользователя\n'
             '➖ Чтобы разблокировать пользователя, нажмите кнопку\n'
             '<b>🔓Разблокировать пользователя</b>\n'
             'и введите ID пользователя\n',
@@ -90,11 +90,11 @@ async def get_all_orders_handler(callback: CallbackQuery):
 
 # set order ID to delete
 @admin_router.callback_query(F.data == "del_order")
-async def prompt_delete_order(callback: CallbackQuery, state: FSMContext):
+async def set_delete_order(callback: CallbackQuery, state: FSMContext):
     await callback.message.answer("Введите номер заказа для удаления:")
     await state.set_state(AdminState.delete_order)
 
-# Handle order deletion by order_id
+# handle order deletion by order_id
 @admin_router.message(AdminState.delete_order)
 async def delete_order_handler(message: Message, state: FSMContext):
     try:
@@ -107,5 +107,49 @@ async def delete_order_handler(message: Message, state: FSMContext):
             await message.answer("Заказ с указанным номером не найден.")
     except ValueError:
         await message.answer("Пожалуйста, введите корректный номер заказа.")
+    finally:
+        await state.clear()
+
+# set user ID to ban
+@admin_router.callback_query(F.data == "ban_user")
+async def set_id_to_ban(callback: CallbackQuery, state: FSMContext):
+    await callback.message.answer("Введите телеграм ID для блокировки:")
+    await state.set_state(AdminState.ban_user)
+
+@admin_router.message(AdminState.ban_user)
+async def ban_user_handler(message: Message, state: FSMContext):
+    try:
+        tg_id = int(message.text)
+        is_banned = await ban_user(tg_id)
+
+        if is_banned:
+            await message.answer(f"Пользователь с ID {tg_id} успешно заблокирован.")
+        else:
+            await message.answer("Пользователь с указанным ID уже заблокирован или не найден.")
+    except ValueError:
+        await message.answer("Пожалуйста, введите корректный телеграм ID.")
+    finally:
+        await state.clear()
+
+
+# set user ID to unban
+@admin_router.callback_query(F.data == "unban_user")
+async def set_id_to_unban(callback: CallbackQuery, state: FSMContext):
+    await callback.message.answer("Введите телеграм ID для разблокировки:")
+    await state.set_state(AdminState.unban_user)
+
+# handle user unban by tg_id
+@admin_router.message(AdminState.unban_user)
+async def unban_user_handler(message: Message, state: FSMContext):
+    try:
+        tg_id = int(message.text)
+        is_unbanned = await unban_user(tg_id)
+
+        if is_unbanned:
+            await message.answer(f"Пользователь с ID {tg_id} успешно разблокирован.")
+        else:
+            await message.answer("Пользователь с указанным ID не найден среди заблокированных.")
+    except ValueError:
+        await message.answer("Пожалуйста, введите корректный телеграм ID.")
     finally:
         await state.clear()

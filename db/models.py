@@ -54,3 +54,9 @@ class Order(Base):
 async def async_db():
     async with engine.begin() as connection:
         await connection.run_sync(Base.metadata.create_all)
+
+
+class BannedUser(Base):
+    __tablename__ = 'banned_users'
+    id: Mapped[int] = mapped_column(primary_key=True)
+    tg_id: Mapped[int] = mapped_column(BigInteger)

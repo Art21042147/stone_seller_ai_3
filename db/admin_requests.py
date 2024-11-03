@@ -1,7 +1,7 @@
 from sqlalchemy.orm import selectinload
 from sqlalchemy import select, delete
 
-from db.models import Order, async_session
+from db.models import Order, BannedUser, async_session
 
 # get order details by order_id
 async def get_order_details(order_id):
@@ -59,3 +59,23 @@ async def delete_order(order_id):
             )
             await session.commit()
             return result.rowcount > 0
+
+
+# ban user by tg_id
+async def ban_user(tg_id):
+    async with async_session() as session:
+        existing_user = await session.execute(select(BannedUser).where(BannedUser.tg_id == tg_id))
+        if existing_user.scalars().first():
+            return False
+
+        new_ban = BannedUser(tg_id=tg_id)
+        session.add(new_ban)
+        await session.commit()
+        return True
+
+# unban user by tg_id
+async def unban_user(tg_id):
+    async with async_session() as session:
+        result = await session.execute(delete(BannedUser).where(BannedUser.tg_id == tg_id))
+        await session.commit()
+        return result.rowcount > 0

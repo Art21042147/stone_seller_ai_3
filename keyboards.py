@@ -64,3 +64,13 @@ async def admin_keyboard(order_id):
     inline_keyboard=[
                     [InlineKeyboardButton(text="Посмотреть", callback_data=f"view_order_{order_id}")]
                     ]))
+
+# bot manager keyboard
+bot_manager_kb = ReplyKeyboardMarkup(
+    keyboard=[
+        [KeyboardButton(text='Посмотреть заказ✅', callback_data='get_order')],
+        [KeyboardButton(text='Все заказы📔', callback_data='get_all_orders')],
+        [KeyboardButton(text='Удалить заказ❌', callback_data='del_order')],
+        [KeyboardButton(text='Заблокировать пользователя🔒', callback_data='ban_user')],
+        [KeyboardButton(text='Разблокировать пользователя🔓', callback_data='unban_user')]
+        ], resize_keyboard=True)

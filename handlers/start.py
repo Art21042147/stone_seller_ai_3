@@ -5,7 +5,6 @@ from aiogram.types import FSInputFile
 
 from keyboards import start_kb, calculator_kb
 
-
 start_router = Router()
 
 # greetings handler

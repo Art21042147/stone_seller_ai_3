@@ -14,6 +14,7 @@ from handlers.calc import calc_router
 from handlers.calc import process_length, process_width
 from handlers.orders import order_router
 from handlers.orders import process_name, process_phone, process_address
+from handlers.admin import admin_router
 from states import StoneState, OrderState
 
 
@@ -23,6 +24,7 @@ async def main():
     bot = Bot(token=config.bot_token.get_secret_value(),
               default=DefaultBotProperties(parse_mode='HTML'))
     dp = Dispatcher(storage=MemoryStorage())
+    dp.include_router(admin_router)
     dp.include_router(start_router)
     dp.include_router(choose_router)
     dp.include_router(calc_router)

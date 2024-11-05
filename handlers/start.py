@@ -7,26 +7,29 @@ from keyboards import start_kb, calculator_kb
 
 start_router = Router()
 
+
 # greetings handler
 @start_router.message(F.text, Command("start"))
 async def greetings(message: Message):
-    user_name = message.from_user.first_name # get telegram user name
+    user_name = message.from_user.first_name  # get telegram user name
     await message.answer(
         f'<b>Добро пожаловать, {user_name}!</b>\n'
         '✨<b>Вас приветствует наш бот</b>✨',
         reply_markup=start_kb)
     logo = FSInputFile('media/appazov.jpg')
     await message.answer_photo(logo,
-    'Для ознакомления с продукцией,\n'
-    'нажмите кнопку\n ℹ️<b>ИНФОРМАЦИЯ</b>\n\n'
-    'Чтобы рассчитать стоимость,\n'
-    'необходимого вам изделия,\n'
-    'нажмите кнопку\n 📝<b>РАССЧЁТ</b>')
+                               'Для ознакомления с продукцией,\n'
+                               'нажмите кнопку\n ℹ️<b>ИНФОРМАЦИЯ</b>\n\n'
+                               'Чтобы рассчитать стоимость,\n'
+                               'необходимого вам изделия,\n'
+                               'нажмите кнопку\n 📝<b>РАССЧЁТ</b>')
+
 
 # info handler
 @start_router.message(F.text == "ИНФОРМАЦИЯ ℹ️")
 async def send_group_link(message: Message):
     await message.answer("https://t.me/appazov_stone")
+
 
 # start calculate handler
 @start_router.message(F.text == "РАССЧЁТ 📝")

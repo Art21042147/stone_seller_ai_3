@@ -7,12 +7,14 @@ from keyboards import (brand_kb, brand_info_kb,
 
 choose_router = Router()
 
+
 # choose brand handler
 @choose_router.callback_query(F.data == 'calculator')
 async def choose_brand(callback: CallbackQuery):
     await callback.answer()
     await callback.message.edit_text('Выберите производителя:',
                                      reply_markup=await brand_kb())
+
 
 # get brand info and choose color handler
 @choose_router.callback_query(F.data.startswith("brand_"))
@@ -24,6 +26,7 @@ async def display_brand_info(callback: CallbackQuery):
 
 
 message_ids_cache = {}
+
 
 # color selection handler
 @choose_router.callback_query(F.data.startswith('color_'))

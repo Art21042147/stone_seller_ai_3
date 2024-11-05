@@ -3,6 +3,7 @@ from sqlalchemy import select, delete
 
 from db.models import Order, BannedUser, async_session
 
+
 # get order details by order_id
 async def get_order_details(order_id):
     async with async_session() as session:
@@ -25,6 +26,7 @@ async def get_order_details(order_id):
                 "cost": order.cost
             }
         return None
+
 
 # get all orders from db
 async def get_all_orders():
@@ -50,6 +52,7 @@ async def get_all_orders():
             })
         return all_orders
 
+
 # delete order from db
 async def delete_order(order_id):
     async with async_session() as session:
@@ -73,11 +76,13 @@ async def ban_user(tg_id):
         await session.commit()
         return True
 
+
 # check if user is banned
 async def is_user_banned(tg_id):
     async with async_session() as session:
         result = await session.execute(select(BannedUser).where(BannedUser.tg_id == tg_id))
         return result.scalars().first() is not None
+
 
 # unban user by tg_id
 async def unban_user(tg_id):

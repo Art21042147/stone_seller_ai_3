@@ -16,6 +16,7 @@ calculator_kb = InlineKeyboardMarkup(inline_keyboard=[
                           callback_data='calculator')]
 ])
 
+
 # choose brand keyboard
 async def brand_kb():
     brands = await get_brand_title()
@@ -36,6 +37,7 @@ async def brand_info_kb(brand_title):
     text = f"<b>{brand_title}:</b>\n{brand_info}"
     return text, brand_info_builder.adjust(1).as_markup()
 
+
 # choose color keyboard
 def get_color_kb(brand_title, color_data, price_rub):
     callback_data = f'confirm_{brand_title}_{color_data}_{price_rub}'
@@ -44,26 +46,28 @@ def get_color_kb(brand_title, color_data, price_rub):
             [InlineKeyboardButton(text='Выбрать этот цвет', callback_data=callback_data)],
         ])
 
+
 # return to choose brand keyboard
 brand_return_kb = InlineKeyboardMarkup(
     inline_keyboard=[
         [InlineKeyboardButton(text='Выбрать другого производителя', callback_data=f'calculator')],
-        ])
-
+    ])
 
 # get order keyboard
 place_order_kb = InlineKeyboardMarkup(
     inline_keyboard=[
-                    [InlineKeyboardButton(text="Оформить заказ", callback_data="place_order")],
-                    [InlineKeyboardButton(text="Выполнить другой расчёт", callback_data="calculator")]
-                    ])
+        [InlineKeyboardButton(text="Оформить заказ", callback_data="place_order")],
+        [InlineKeyboardButton(text="Выполнить другой расчёт", callback_data="calculator")]
+    ])
+
 
 # admin keyboard
 async def admin_keyboard(order_id):
     return (InlineKeyboardMarkup(
-    inline_keyboard=[
-                    [InlineKeyboardButton(text="Посмотреть", callback_data=f"view_order_{order_id}")]
-                    ]))
+        inline_keyboard=[
+            [InlineKeyboardButton(text="Посмотреть", callback_data=f"view_order_{order_id}")]
+        ]))
+
 
 # bot manager keyboard
 bot_manager_kb = InlineKeyboardMarkup(
@@ -73,4 +77,4 @@ bot_manager_kb = InlineKeyboardMarkup(
         [InlineKeyboardButton(text='Удалить заказ❌', callback_data='del_order')],
         [InlineKeyboardButton(text='Заблокировать пользователя🔒', callback_data='ban_user')],
         [InlineKeyboardButton(text='Разблокировать пользователя🔓', callback_data='unban_user')]
-        ])
+    ])

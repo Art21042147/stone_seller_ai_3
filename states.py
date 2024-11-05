@@ -12,7 +12,7 @@ class StoneState(StatesGroup):
 
 class OrderState(StoneState):
     name = State()
-    phone= State()
+    phone = State()
     address = State()
 
 

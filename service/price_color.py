@@ -3,6 +3,7 @@ from aiogram.types import FSInputFile
 from service.usd_rate import get_usd_to_rub_rate
 from db.requests import get_color
 
+
 # get stone images and prices
 async def get_price_color(brand_title):
     colors = await get_color(brand_title)

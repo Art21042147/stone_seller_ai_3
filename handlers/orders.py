@@ -10,6 +10,7 @@ from config_reader import config
 
 order_router = Router()
 
+
 @order_router.callback_query(F.data == "place_order")
 async def start_order(callback: CallbackQuery, state: FSMContext):
     # save the chat ID
@@ -19,11 +20,13 @@ async def start_order(callback: CallbackQuery, state: FSMContext):
     await callback.message.answer("Введите ваше имя:")
     await state.set_state(OrderState.name)
 
+
 # save the name and request the phone number
 async def process_name(message: Message, state: FSMContext):
     await state.update_data(name=message.text)
     await state.set_state(OrderState.phone)
     await message.answer("Введите номер телефона для связи:")
+
 
 # save the phone number and request the address
 async def process_phone(message: Message, state: FSMContext):
@@ -34,6 +37,7 @@ async def process_phone(message: Message, state: FSMContext):
         await message.answer("Введите свой адрес:")
     except ValueError:
         await message.answer("Пожалуйста, введите корректный номер телефона.")
+
 
 # save the address and order details
 async def process_address(message: Message, state: FSMContext):

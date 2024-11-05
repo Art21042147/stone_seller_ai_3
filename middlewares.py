@@ -4,12 +4,13 @@ from typing import Callable, Dict, Any, Awaitable
 
 from db.admin_requests import is_user_banned
 
+
 class BanCheckMiddleware(BaseMiddleware):
     async def __call__(
-        self,
-        handler: Callable[[Message | CallbackQuery, Dict[str, Any]], Awaitable[Any]],
-        event: Message | CallbackQuery,
-        data: Dict[str, Any]
+            self,
+            handler: Callable[[Message | CallbackQuery, Dict[str, Any]], Awaitable[Any]],
+            event: Message | CallbackQuery,
+            data: Dict[str, Any]
     ) -> Any:
         # check if user is banned
         if isinstance(event, (Message, CallbackQuery)):

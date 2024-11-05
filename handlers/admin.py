@@ -10,6 +10,7 @@ from db.admin_requests import *
 
 admin_router = Router()
 
+
 # admin greeting handler
 @admin_router.message(Command("admin"))
 async def greeting_admin(message: Message):
@@ -34,11 +35,13 @@ async def greeting_admin(message: Message):
     else:
         await message.answer("У вас нет прав на выполнение этой команды.")
 
+
 # get number for order handler
 @admin_router.callback_query(F.data == 'get_order')
 async def set_order_number(callback: CallbackQuery, state: FSMContext):
     await callback.message.answer("Введите номер заказа:")
     await state.set_state(AdminState.order)
+
 
 # get order handler
 async def get_order_by_id(message: Message, state: FSMContext):
@@ -65,6 +68,7 @@ async def get_order_by_id(message: Message, state: FSMContext):
     finally:
         await state.clear()
 
+
 # get all orders handler
 @admin_router.callback_query(F.data == "get_all_orders")
 async def get_all_orders_handler(callback: CallbackQuery):
@@ -88,11 +92,13 @@ async def get_all_orders_handler(callback: CallbackQuery):
             )
     await callback.answer()
 
+
 # set order ID to delete
 @admin_router.callback_query(F.data == "del_order")
 async def set_delete_order(callback: CallbackQuery, state: FSMContext):
     await callback.message.answer("Введите номер заказа для удаления:")
     await state.set_state(AdminState.delete_order)
+
 
 # handle order deletion by order_id
 @admin_router.message(AdminState.delete_order)
@@ -110,11 +116,13 @@ async def delete_order_handler(message: Message, state: FSMContext):
     finally:
         await state.clear()
 
+
 # set user ID to ban
 @admin_router.callback_query(F.data == "ban_user")
 async def set_id_to_ban(callback: CallbackQuery, state: FSMContext):
     await callback.message.answer("Введите телеграм ID для блокировки:")
     await state.set_state(AdminState.ban_user)
+
 
 @admin_router.message(AdminState.ban_user)
 async def ban_user_handler(message: Message, state: FSMContext):
@@ -137,6 +145,7 @@ async def ban_user_handler(message: Message, state: FSMContext):
 async def set_id_to_unban(callback: CallbackQuery, state: FSMContext):
     await callback.message.answer("Введите телеграм ID для разблокировки:")
     await state.set_state(AdminState.unban_user)
+
 
 # handle user unban by tg_id
 @admin_router.message(AdminState.unban_user)

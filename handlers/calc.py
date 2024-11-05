@@ -5,8 +5,8 @@ from aiogram.fsm.context import FSMContext
 from states import StoneState
 from keyboards import place_order_kb
 
-
 calc_router = Router()
+
 
 # get size stone handler
 @calc_router.callback_query(F.data.startswith('confirm_'))
@@ -30,11 +30,13 @@ async def confirm_material(callback: CallbackQuery, state: FSMContext):
     await callback.message.answer("Пожалуйста, введите длину изделия в мм:")
     await state.set_state(StoneState.length)
 
+
 # saves length and get width
 async def process_length(message: Message, state: FSMContext):
     await state.update_data(length=int(message.text))
     await state.set_state(StoneState.width)
     await message.answer("Пожалуйста, введите ширину изделия в мм:")
+
 
 # saves width and get cost
 async def process_width(message: Message, state: FSMContext):

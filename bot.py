@@ -21,8 +21,8 @@ from states import StoneState, OrderState, AdminState
 
 
 async def main():
-    await async_db() # creating db
-    await update_brands_and_colors() # updating brands and colors
+    await async_db()  # creating db
+    await update_brands_and_colors()  # updating brands and colors
     bot = Bot(token=config.bot_token.get_secret_value(),
               default=DefaultBotProperties(parse_mode='HTML'))
     dp = Dispatcher(storage=MemoryStorage())
@@ -47,6 +47,7 @@ async def main():
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot,
                            allowed_updates=dp.resolve_used_update_types())
+
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)

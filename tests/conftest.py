@@ -3,6 +3,14 @@ from unittest.mock import AsyncMock, patch
 
 
 @pytest.fixture
+def mock_message():
+    message = AsyncMock()
+    message.from_user.first_name = "TestUser"
+    message.answer = AsyncMock()
+    return message
+
+
+@pytest.fixture
 def mock_bot():
     return AsyncMock()
 

@@ -1,37 +1,17 @@
 import pytest
 from sqlalchemy import text
 
-from db.models import async_db
 from db.requests import *
 from db.admin_requests import *
-from db.models import async_session, Brand, Color
 
 
-# fixture for test data
-@pytest.fixture(scope="function", autouse=True)
-async def setup_test_data():
-    await async_db()
-    async with async_session() as session:
-        # add data for test
-        brand = Brand(title="TestBrand", description="Test Description")
-        session.add(brand)
-        await session.flush()
-
-        color = Color(color="Red", price=100, brand_id=brand.id)
-        session.add(color)
-        await session.commit()
-
-
-# test update stone data
 @pytest.mark.asyncio
-async def test_update_stone_data():
+async def test_update_stone_data(db_session, setup_test_data):
     await update_brands_and_colors()
 
 
-# test get stone data
 @pytest.mark.asyncio
-async def test_get_stone_data():
-    await update_brands_and_colors()
+async def test_get_stone_data(setup_test_data):
     titles = await get_brand_title()
     assert "TestBrand" in titles
 
@@ -43,9 +23,8 @@ async def test_get_stone_data():
     assert "Red" in colors_list
 
 
-# test save order
 @pytest.mark.asyncio
-async def test_save_order():
+async def test_save_order(db_session, setup_test_data):
     order_id = await save_order(
         tg_id=123,
         brand_title="TestBrand",
@@ -58,8 +37,8 @@ async def test_save_order():
         address="Test Address"
     )
 
-    async with async_session() as session:
-        result = await session.execute(
+    async with db_session.begin():
+        result = await db_session.execute(
             text("SELECT * FROM orders WHERE id = :order_id"), {"order_id": order_id}
         )
         order = result.mappings().fetchone()
@@ -67,10 +46,8 @@ async def test_save_order():
         assert order["name"] == "Test User"
 
 
-# test get order details
 @pytest.mark.asyncio
-async def test_get_order():
-    # create order
+async def test_get_order(db_session, setup_test_data):
     order_id = await save_order(
         tg_id=123,
         brand_title="TestBrand",
@@ -87,10 +64,8 @@ async def test_get_order():
     assert order_details["tg_id"] == 123
 
 
-# test deleting order
 @pytest.mark.asyncio
-async def test_del_order():
-    # create order
+async def test_del_order(db_session, setup_test_data):
     order_id = await save_order(
         tg_id=123,
         brand_title="TestBrand",
@@ -102,18 +77,15 @@ async def test_del_order():
         phone=1234567890,
         address="Test Address"
     )
-    # delete order
     is_deleted = await delete_order(order_id)
     assert is_deleted
 
-    # make sure that the order no longer exists
     order_details = await get_order_details(order_id)
     assert order_details is None
 
 
-# test for blocking and unblocking user
 @pytest.mark.asyncio
-async def test_ban_user():
+async def test_ban_user(db_session):
     tg_id = 123456
     is_banned = await ban_user(tg_id)
     assert is_banned

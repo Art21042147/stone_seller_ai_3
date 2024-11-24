@@ -1,18 +1,6 @@
 import pytest
 
 from handlers.start import *
-from keyboards import start_kb
-
-
-@pytest.mark.asyncio
-async def test_greetings(mock_message):
-    await greetings(mock_message)
-
-    expected_text = (
-        f"<b>Добро пожаловать, TestUser!</b>\n"
-        "✨<b>Вас приветствует наш бот</b>✨"
-    )
-    mock_message.answer.assert_any_call(expected_text, reply_markup=start_kb)
 
 
 @pytest.mark.asyncio

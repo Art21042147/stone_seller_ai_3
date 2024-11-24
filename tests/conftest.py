@@ -3,7 +3,9 @@ from unittest.mock import AsyncMock, patch
 from aiogram import Dispatcher
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.storage.base import StorageKey
+from aiogram.fsm.storage.memory import MemoryStorage
 from sqlalchemy.ext.asyncio import AsyncSession
+from aiogram.types import Message, User, Chat
 
 from db.models import async_db, async_session, Brand, Color
 from tests.mocked_bot import MockedBot
@@ -11,8 +13,10 @@ from tests.mocked_bot import MockedBot
 
 @pytest_asyncio.fixture
 def mock_message():
-    message = AsyncMock()
-    message.from_user.first_name = "TestUser"
+    message = AsyncMock(spec=Message)
+    message.from_user = User(id=456, is_bot=False, first_name="TestUser")
+    message.chat = Chat(id=123, type="private")
+    message.text = "Hello"
     message.answer = AsyncMock()
     return message
 
@@ -30,13 +34,6 @@ async def fsm_context(storage):
     return FSMContext(storage=storage, key=key)
 
 
-@pytest_asyncio.fixture
-def mock_test_config():
-    with patch("config_reader.config") as mock_config:
-        mock_config.BOT_TOKEN = "test_bot_token"
-        yield mock_config
-
-
 @pytest_asyncio.fixture()
 def bot():
     return MockedBot()
@@ -50,6 +47,15 @@ async def dispatcher():
         yield dp
     finally:
         await dp.emit_shutdown()
+
+
+@pytest_asyncio.fixture
+async def storage():
+    temp_storage = MemoryStorage()
+    try:
+        yield temp_storage
+    finally:
+        await temp_storage.close()
 
 
 @pytest_asyncio.fixture(scope="function")
@@ -70,3 +76,9 @@ async def setup_test_data(db_session: AsyncSession):
     await db_session.commit()
 
     return {"brand": brand, "color": color}
+
+
+@pytest_asyncio.fixture
+def mock_is_user_banned():
+    with patch("db.admin_requests.is_user_banned", new_callable=AsyncMock) as mock:
+        yield mock

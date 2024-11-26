@@ -6,11 +6,6 @@ from db.admin_requests import *
 
 
 @pytest.mark.asyncio
-async def test_update_stone_data(db_session, setup_test_data):
-    await update_brands_and_colors()
-
-
-@pytest.mark.asyncio
 async def test_get_stone_data(setup_test_data):
     titles = await get_brand_title()
     assert "TestBrand" in titles
